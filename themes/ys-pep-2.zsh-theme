@@ -60,7 +60,8 @@ ys_hg_prompt_info() {
 local exit_code="%(?,,C:%F{red}%?%{$reset_color%} )"
 
 ### BEGIN: pepoluan changes ###
-local dgrey="%B%F{black}"
+#local dgrey="%B%F{black}"
+local dgrey="%F{240}"
 local leftbar1="%F{148}┏%f"
 local leftbar2="%F{148}┃%f"
 local leftbar3="%F{148}┗%f"
