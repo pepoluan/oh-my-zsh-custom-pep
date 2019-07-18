@@ -15,6 +15,6 @@ This repo contains **custom** plugins & themes that had been unmerged into `oh-m
 1. Install `oh-my-zsh` as usual
 2. `cd ~/.oh-my-zsh`
 3. `rm -rf custom`
-4. `git clone $THIS_REPOSITORY custom`
+4. `git clone --recurse-submodules $THIS_REPOSITORY custom`
 5. ...
 6. Profit!!! :D
