@@ -67,8 +67,8 @@ local leftbar2="%F{148}┃%f"
 local leftbar3="%F{148}┗%f"
 
 # Show my IP Address
-ZSH_THEME_SHOW_IP=1
-ZSH_THEME_SHOW_IP6=0
+ZSH_THEME_SHOW_IP=${ZSH_THEME_SHOW_IP:-1}
+ZSH_THEME_SHOW_IP6=${ZSH_THEME_SHOW_IP6:-0}
 yspep_my_ip() {
   [[ $ZSH_THEME_SHOW_IP != 1 ]] && return
   echo -n "${dgrey}[%b%F{green}"
