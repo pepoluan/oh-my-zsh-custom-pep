@@ -1,4 +1,4 @@
-# ys-pep Theme version 2, based on ys Theme by Yad Smood
+	# ys-pep Theme version 2, based on ys Theme by Yad Smood
 #
 # ----- BEGIN Original Description -----
 #
@@ -31,8 +31,8 @@
 YS_VCS_PROMPT_PREFIX1=" %F{white}on%{$reset_color%} "
 YS_VCS_PROMPT_PREFIX2=":%F{cyan}"
 YS_VCS_PROMPT_SUFFIX="%{$reset_color%}"
-YS_VCS_PROMPT_DIRTY=" %F{red}x"
-YS_VCS_PROMPT_CLEAN=" %F{green}o"
+YS_VCS_PROMPT_DIRTY=" %F{red}%BX%b"
+YS_VCS_PROMPT_CLEAN=" %F{green}%Bo%b"
 
 # Git info
 local git_info='$(git_prompt_info)'
@@ -44,17 +44,17 @@ ZSH_THEME_GIT_PROMPT_CLEAN="$YS_VCS_PROMPT_CLEAN"
 # HG info
 local hg_info='$(ys_hg_prompt_info)'
 ys_hg_prompt_info() {
-	# make sure this is a Mercurial project
-	if [ -d '.hg' ] || $(hg summary > /dev/null 2>&1) ; then
-		echo -n "${YS_VCS_PROMPT_PREFIX1}hg${YS_VCS_PROMPT_PREFIX2}"
-		echo -n $(hg branch 2>/dev/null)
-		if [ -n "$(hg status 2>/dev/null)" ]; then
-			echo -n "$YS_VCS_PROMPT_DIRTY"
-		else
-			echo -n "$YS_VCS_PROMPT_CLEAN"
-		fi
-		echo -n "$YS_VCS_PROMPT_SUFFIX"
-	fi
+        # make sure this is a Mercurial project
+        if [ -d '.hg' ] || $(hg summary > /dev/null 2>&1) ; then
+                echo -n "${YS_VCS_PROMPT_PREFIX1}hg${YS_VCS_PROMPT_PREFIX2}"
+                echo -n $(hg branch 2>/dev/null)
+                if [ -n "$(hg status 2>/dev/null)" ]; then
+                        echo -n "$YS_VCS_PROMPT_DIRTY"
+                else
+                        echo -n "$YS_VCS_PROMPT_CLEAN"
+                fi
+                echo -n "$YS_VCS_PROMPT_SUFFIX"
+        fi
 }
 
 local exit_code="%(?,,C:%F{red}%?%{$reset_color%} )"
@@ -73,31 +73,23 @@ yspep_my_ip() {
   [[ $ZSH_THEME_SHOW_IP != 1 ]] && return
   echo -n "${dgrey}[%b%F{green}"
   addrs=()
-  case $(uname) in
-    Darwin|FreeBSD)
+  _uname="$(uname)"
+  case "${(L)_uname}" in
+    darwin*|freebsd*)
       for i in $(networksetup -listallhardwareports | awk '$1 == "Device:" {print $2}'); do
         addrs+=("$(ipconfig getifaddr $i)")
       done
       ;;
-    Linux)
+    cygwin*)
+      addrs=( $(ipconfig | awk '$1 ~ /IP/ && $2 ~ /[Aa]ddress/ {sub(/.*:/, "", $0); gsub(/[ \t\r]/, "", $0); print $0}') )
+      ;;
+    *)  # Assume Linux
       while read num dev fam addr etc; do
         [[ $dev =~ ^lo ]] && continue   # skip loopback
         [[ $fam =~ ^inet ]] || continue  # skip non-inet addr's (what could they be?)
         [[ $fam == inet6 && $ZSH_THEME_SHOW_IP6 != 1 ]] && continue
         addrs+=( "%F{022}$dev:%F{green}${addr%/*}" )
       done < <(ip -d -o addr sh)
-      ;;
-    *)  # Assume Windows
-      if [[ ${(L)_system_name} == cygwin ]]; then
-        addrs=( $(ipconfig | awk '$1 ~ /IP/ && $2 ~ /[Aa]ddress/ {sub(/.*:/, "", $0); gsub(/[ \t\r]/, "", $0); print $0}') )
-      else
-        while read num dev fam addr etc; do
-          [[ $dev =~ ^lo ]] && continue   # skip loopback
-          [[ $fam =~ ^inet ]] || continue  # skip non-inet addr's (what could they be?)
-          [[ $fam == inet6 && $ZSH_THEME_SHOW_IP6 != 1 ]] && continue
-          addrs+=( "%F{022}$dev:%F{green}${addr%/*}" )
-        done < <(ip -d -o addr sh)
-      fi
       ;;
   esac
   echo -n "${(j: :)addrs}"
@@ -109,6 +101,15 @@ local ip_info='$(yspep_my_ip)'
 ZSH_THEME_VIRTUALENV_PREFIX=" V:"
 ZSH_THEME_VIRTUALENV_SUFFIX=" "
 local venv_info="%B%F{blue}\$(virtualenv_prompt_info)%b"
+
+# Detect tmux
+yspep_tmux_info() {
+  if [[ $TMUX ]]; then
+    tmux_window="$(tmux run 'echo "#{window_id}"')"
+    printf "\xE2\x80\x96${tmux_window#@}"
+  fi
+}
+local tmux_info='$(yspep_tmux_info)'
 
 # Other info, you can override this function in .zshrc
 yspep_other_info() {
@@ -126,7 +127,7 @@ PROMPT="$leftbar1$ip_info
 # Second Line (notice the newline at end!)
 PROMPT+="$leftbar2${dgrey}[%*]%b \
 %(#,%K{yellow}%F{black}%n%k,%F{cyan}%n)\
-%F{white}@%F{green}%m$dgrey:%b\
+%F{white}@%F{green}%m${tmux_info}$dgrey:%b\
 %B%F{yellow}%~%b\
 ${hg_info}\
 ${git_info}\
