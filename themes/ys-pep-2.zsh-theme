@@ -69,6 +69,7 @@ local leftbar3="%F{148}┗%f"
 # Show my IP Address
 ZSH_THEME_SHOW_IP=${ZSH_THEME_SHOW_IP:-1}
 ZSH_THEME_SHOW_IP6=${ZSH_THEME_SHOW_IP6:-0}
+ZSH_THEME_SHOW_APIPA=${ZSH_THEME_SHOW_APIPA:-0}
 yspep_my_ip() {
   [[ $ZSH_THEME_SHOW_IP != 1 ]] && return
   echo -n "${dgrey}[%b%F{green}"
@@ -88,6 +89,7 @@ yspep_my_ip() {
         [[ $dev =~ ^lo ]] && continue   # skip loopback
         [[ $fam =~ ^inet ]] || continue  # skip non-inet addr's (what could they be?)
         [[ $fam == inet6 && $ZSH_THEME_SHOW_IP6 != 1 ]] && continue
+	[[ $addr =~ 169\.254\. && $ZSH_THEME_SHOW_APIPA != 1 ]] && continue
         addrs+=( "%F{022}$dev:%F{green}${addr%/*}" )
       done < <(ip -d -o addr sh)
       ;;
