@@ -18,3 +18,14 @@ This repo contains **custom** plugins & themes that had been unmerged into `oh-m
 4. `git clone --recurse-submodules $THIS_REPOSITORY custom`
 5. ...
 6. Profit!!! :D
+
+## Some troubleshooting
+
+### The plugin `zsh-syntax-highlighting` not working
+
+Go to `~/.oh-my-zsh/custom` and run:
+
+```bash
+git submodule update --init zsh-syntax-highlighting
+```
+
