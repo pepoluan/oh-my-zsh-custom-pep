@@ -82,7 +82,10 @@ yspep_my_ip() {
       done
       ;;
     cygwin*)
-      addrs=( $(ipconfig | awk '$1 ~ /IP/ && $2 ~ /[Aa]ddress/ {sub(/.*:/, "", $0); gsub(/[ \t\r]/, "", $0); print $0}') )
+      for addr in $(ipconfig | awk '$0 ~ /IPv4 Address/ { gsub(/[\t\r]/, "", $NF); print $NF }'); do
+        [[ $addr =~ 169\.254\. && $ZSH_THEME_SHOW_APIPA != 1 ]] && continue
+        addrs+=( $addr )
+      done
       ;;
     *)  # Assume Linux
       while read num dev fam addr etc; do
