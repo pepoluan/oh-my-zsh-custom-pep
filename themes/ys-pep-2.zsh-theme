@@ -1,4 +1,4 @@
-	# ys-pep Theme version 2, based on ys Theme by Yad Smood
+# ys-pep Theme version 2, based on ys Theme by Yad Smood
 #
 # ----- BEGIN Original Description -----
 #
@@ -92,7 +92,7 @@ yspep_my_ip() {
         [[ $dev =~ ^lo ]] && continue   # skip loopback
         [[ $fam =~ ^inet ]] || continue  # skip non-inet addr's (what could they be?)
         [[ $fam == inet6 && $ZSH_THEME_SHOW_IP6 != 1 ]] && continue
-	[[ $addr =~ 169\.254\. && $ZSH_THEME_SHOW_APIPA != 1 ]] && continue
+        [[ $addr =~ 169\.254\. && $ZSH_THEME_SHOW_APIPA != 1 ]] && continue
         addrs+=( "%F{022}$dev:%F{green}${addr%/*}" )
       done < <(ip -d -o addr sh)
       ;;
