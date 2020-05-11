@@ -8,12 +8,9 @@ Add to the `plugins` array.
 
 ## Provided commands (functions/aliases)
 
-| Alias  | Description                                              |
-|:------:|:--------------------------------------------------------:|
-| `viml` | Open file `$2` vim and make line `$1` to be topmost. [1] |
+| Alias   | Description                                           |
+|:-------:|:-----------------------------------------------------:|
+| `viml`  | Open file `$2` vim and make line `$1` to be topmost.  |
+| `vimrc` | Open `~/.vimrc`                                       |
 
-**Notes:**
 
-[1] You need to create the `Silent` command. [Go here and find "external grep".][Silent]
-
-[Silent]: https://vim.fandom.com/wiki/Avoiding_the_%22Hit_ENTER_to_continue%22_prompts
