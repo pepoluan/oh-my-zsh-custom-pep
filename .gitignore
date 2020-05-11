@@ -2,3 +2,6 @@
 example.zsh
 plugins/example/
 
+# Compiled ZSH Scripts -- might not be compatible
+*.zwc
+
