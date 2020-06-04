@@ -119,7 +119,7 @@ local tmux_info='$(yspep_tmux_info)'
 # Host name, because in WSL the host name picks up the physical name
 yspep_host() {
   if [[ $WSL_DISTRO_NAME ]]; then
-    printf "$WSL_DISTRO_NAME"
+    printf "${WSL_DISTRO_NAME}\u229E"
   else
     printf "%m"
   fi
