@@ -116,6 +116,16 @@ yspep_tmux_info() {
 }
 local tmux_info='$(yspep_tmux_info)'
 
+# Host name, because in WSL the host name picks up the physical name
+yspep_host() {
+  if [[ $WSL_DISTRO_NAME ]]; then
+    printf "$WSL_DISTRO_NAME"
+  else
+    printf "%m"
+  fi
+}
+local host='$(yspep_host)'
+
 # Other info, you can override this function in .zshrc
 yspep_other_info() {
   # Example: Show the GCE_PROJECT variable in yellow:
@@ -132,7 +142,7 @@ PROMPT="$leftbar1$ip_info
 # Second Line (notice the newline at end!)
 PROMPT+="$leftbar2${dgrey}[%*]%b \
 %(#,%K{yellow}%F{black}%n%k,%F{cyan}%n)\
-%F{white}@%F{green}%m${tmux_info}$dgrey:%b\
+%F{white}@%F{green}${host}${tmux_info}$dgrey:%b\
 %B%F{yellow}%~%b\
 ${hg_info}\
 ${git_info}\
