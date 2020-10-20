@@ -119,9 +119,9 @@ local tmux_info='$(yspep_tmux_info)'
 # Host name, because in WSL the host name picks up the physical name
 yspep_host() {
   if [[ $WSL_DISTRO_NAME ]]; then
-    printf "${WSL_DISTRO_NAME}\u229E"
+    printf "$fg[yellow]wsl|$fg[green]${WSL_DISTRO_NAME}"
   else
-    printf "%m"
+    printf "$fg[green]%%m"
   fi
 }
 local host='$(yspep_host)'
@@ -142,7 +142,7 @@ PROMPT="$leftbar1$ip_info
 # Second Line (notice the newline at end!)
 PROMPT+="$leftbar2${dgrey}[%*]%b \
 %(#,%K{yellow}%F{black}%n%k,%F{cyan}%n)\
-%F{white}@%F{green}${host}${tmux_info}$dgrey:%b\
+%F{white}@${host}${tmux_info}$dgrey:%b\
 %B%F{yellow}%~%b\
 ${hg_info}\
 ${git_info}\
