@@ -76,9 +76,17 @@ yspep_my_ip() {
   addrs=()
   _uname="$(uname)"
   case "${(L)_uname}" in
-    darwin*|freebsd*)
+    darwin*)
       for i in $(networksetup -listallhardwareports | awk '$1 == "Device:" {print $2}'); do
         addrs+=("$(ipconfig getifaddr $i)")
+      done
+      ;;
+    freebsd*)
+      ifaces=( $(ifconfig | grep "UP" | sed -r -e 's|:.*||') )
+      for dev in ${ifaces[@]}; do
+        [[ $dev =~ ^lo ]] && continue
+        addr=$( ifconfig $dev | grep "inet " | cut -d" " -f2 )
+        addrs+=( "%F{022}$dev:%F{green}$addr" )
       done
       ;;
     cygwin*)
