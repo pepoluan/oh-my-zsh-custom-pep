@@ -34,6 +34,8 @@ YS_VCS_PROMPT_SUFFIX="%{$reset_color%}"
 YS_VCS_PROMPT_DIRTY=" %F{red}%BX%b"
 YS_VCS_PROMPT_CLEAN=" %F{green}%Bo%b"
 
+YSP_IFACE_EXCLUDE_RE="docker.*|br-.*"
+
 # Git info
 local git_info='$(git_prompt_info)'
 ZSH_THEME_GIT_PROMPT_PREFIX="${YS_VCS_PROMPT_PREFIX1}git${YS_VCS_PROMPT_PREFIX2}"
@@ -85,6 +87,7 @@ yspep_my_ip() {
       ifaces=( $(ifconfig | grep "UP" | sed -r -e 's|:.*||') )
       for dev in ${ifaces[@]}; do
         [[ $dev =~ ^lo ]] && continue
+        [[ $dev =~ $YSP_IFACE_EXCLUDE_RE ]] && continue
         addr=$( ifconfig $dev | grep "inet " | cut -d" " -f2 )
         addrs+=( "%F{022}$dev:%F{green}$addr" )
       done
@@ -101,6 +104,7 @@ yspep_my_ip() {
         [[ $fam =~ ^inet ]] || continue  # skip non-inet addr's (what could they be?)
         [[ $fam == inet6 && $ZSH_THEME_SHOW_IP6 != 1 ]] && continue
         [[ $addr =~ 169\.254\. && $ZSH_THEME_SHOW_APIPA != 1 ]] && continue
+        [[ $dev =~ $YSP_IFACE_EXCLUDE_RE ]] && continue
         addrs+=( "%F{022}$dev:%F{green}${addr%/*}" )
       done < <(ip -d -o addr sh)
       ;;
