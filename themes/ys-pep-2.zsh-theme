@@ -34,7 +34,10 @@ YS_VCS_PROMPT_SUFFIX="%{$reset_color%}"
 YS_VCS_PROMPT_DIRTY=" %F{red}%BX%b"
 YS_VCS_PROMPT_CLEAN=" %F{green}%Bo%b"
 
-YSP_IFACE_EXCLUDE_RE="docker.*|br-.*"
+local default_iface_exclude="docker.*|br-.*"
+local iface_exclude_re="${YSP_IFACE_EXCLUDE_RE:-${default_iface_exclude}}"
+
+local bar_color="${YSP_BAR_COLOR:-148}"
 
 # Git info
 local git_info='$(git_prompt_info)'
@@ -64,14 +67,14 @@ local exit_code="%(?,,C:%F{red}%?%{$reset_color%} )"
 ### BEGIN: pepoluan changes ###
 #local dgrey="%B%F{black}"
 local dgrey="%F{240}"
-local leftbar1="%F{148}┏%f"
-local leftbar2="%F{148}┃%f"
-local leftbar3="%F{148}┗%f"
+local leftbar1="%F{${bar_color}}┏%f"
+local leftbar2="%F{${bar_color}}┃%f"
+local leftbar3="%F{${bar_color}}┗%f"
 
 # Show my IP Address
 ZSH_THEME_SHOW_IP=${ZSH_THEME_SHOW_IP:-1}
 ZSH_THEME_SHOW_IP6=${ZSH_THEME_SHOW_IP6:-0}
-ZSH_THEME_SHOW_APIPA=${ZSH_THEME_SHOW_APIPA:-0}
+ZSH_THEME_SHOW_APIPA=${YSP_IFACE_EXCLUDE_REZSH_THEME_SHOW_APIPA:-0}
 yspep_my_ip() {
   [[ $ZSH_THEME_SHOW_IP != 1 ]] && return
   echo -n "${dgrey}[%b%F{green}"
@@ -87,7 +90,7 @@ yspep_my_ip() {
       ifaces=( $(ifconfig | grep "UP" | sed -r -e 's|:.*||') )
       for dev in ${ifaces[@]}; do
         [[ $dev =~ ^lo ]] && continue
-        [[ $dev =~ $YSP_IFACE_EXCLUDE_RE ]] && continue
+        [[ $dev =~ $iface_exclude_re ]] && continue
         addr=$( ifconfig $dev | grep "inet " | cut -d" " -f2 )
         addrs+=( "%F{022}$dev:%F{green}$addr" )
       done
@@ -104,7 +107,7 @@ yspep_my_ip() {
         [[ $fam =~ ^inet ]] || continue  # skip non-inet addr's (what could they be?)
         [[ $fam == inet6 && $ZSH_THEME_SHOW_IP6 != 1 ]] && continue
         [[ $addr =~ 169\.254\. && $ZSH_THEME_SHOW_APIPA != 1 ]] && continue
-        [[ $dev =~ $YSP_IFACE_EXCLUDE_RE ]] && continue
+        [[ $dev =~ $iface_exclude_re ]] && continue
         addrs+=( "%F{022}$dev:%F{green}${addr%/*}" )
       done < <(ip -d -o addr sh)
       ;;
