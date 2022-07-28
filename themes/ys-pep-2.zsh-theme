@@ -28,35 +28,38 @@
 # Nov-Dec 2017 Pandu POLUAN <pepoluan@gmail.com>
 
 # VCS
-YS_VCS_PROMPT_PREFIX1=" %F{white}on%{$reset_color%} "
-YS_VCS_PROMPT_PREFIX2=":%F{cyan}"
-YS_VCS_PROMPT_SUFFIX="%{$reset_color%}"
-YS_VCS_PROMPT_DIRTY=" %F{red}%BX%b"
-YS_VCS_PROMPT_CLEAN=" %F{green}%Bo%b"
+local vcs_prompt_prefix1=" %F{white}on%{$reset_color%} "
+local vcs_prompt_prefix2=":%F{cyan}"
+local vcs_prompt_suffix="%{$reset_color%}"
+local vcs_prompt_dirty=" %F{red}%BX%b"
+local vcs_prompt_clean=" %F{green}%Bo%b"
 
-YSP_IFACE_EXCLUDE_RE="docker.*|br-.*"
+local default_iface_exclude="docker.*|br-.*"
+local iface_exclude_re="${YSP_IFACE_EXCLUDE_RE:-${default_iface_exclude}}"
+
+local bar_color="${YSP_BAR_COLOR:-148}"
 
 # Git info
 local git_info='$(git_prompt_info)'
-ZSH_THEME_GIT_PROMPT_PREFIX="${YS_VCS_PROMPT_PREFIX1}git${YS_VCS_PROMPT_PREFIX2}"
-ZSH_THEME_GIT_PROMPT_SUFFIX="$YS_VCS_PROMPT_SUFFIX"
-ZSH_THEME_GIT_PROMPT_DIRTY="$YS_VCS_PROMPT_DIRTY"
-ZSH_THEME_GIT_PROMPT_CLEAN="$YS_VCS_PROMPT_CLEAN"
+ZSH_THEME_GIT_PROMPT_PREFIX="${vcs_prompt_prefix1}git${vcs_prompt_prefix2}"
+ZSH_THEME_GIT_PROMPT_SUFFIX="$vcs_prompt_suffix"
+ZSH_THEME_GIT_PROMPT_DIRTY="$vcs_prompt_dirty"
+ZSH_THEME_GIT_PROMPT_CLEAN="$vcs_prompt_clean"
 
 # HG info
 local hg_info='$(ys_hg_prompt_info)'
 ys_hg_prompt_info() {
-        # make sure this is a Mercurial project
-        if [ -d '.hg' ] || $(hg summary > /dev/null 2>&1) ; then
-                echo -n "${YS_VCS_PROMPT_PREFIX1}hg${YS_VCS_PROMPT_PREFIX2}"
-                echo -n $(hg branch 2>/dev/null)
-                if [ -n "$(hg status 2>/dev/null)" ]; then
-                        echo -n "$YS_VCS_PROMPT_DIRTY"
-                else
-                        echo -n "$YS_VCS_PROMPT_CLEAN"
-                fi
-                echo -n "$YS_VCS_PROMPT_SUFFIX"
-        fi
+  # make sure this is a Mercurial project
+  if [ -d '.hg' ] && $(hg summary > /dev/null 2>&1) ; then
+    echo -n "${vcs_prompt_prefix1}hg${vcs_prompt_prefix2}"
+    echo -n $(hg branch 2>/dev/null)
+    if [ -n "$(hg status 2>/dev/null)" ]; then
+      echo -n "$vcs_prompt_dirty"
+    else
+      echo -n "$vcs_prompt_clean"
+    fi
+    echo -n "$vcs_prompt_suffix"
+  fi
 }
 
 local exit_code="%(?,,C:%F{red}%?%{$reset_color%} )"
@@ -64,14 +67,14 @@ local exit_code="%(?,,C:%F{red}%?%{$reset_color%} )"
 ### BEGIN: pepoluan changes ###
 #local dgrey="%B%F{black}"
 local dgrey="%F{240}"
-local leftbar1="%F{148}┏%f"
-local leftbar2="%F{148}┃%f"
-local leftbar3="%F{148}┗%f"
+local leftbar1="%F{${bar_color}}┏%f"
+local leftbar2="%F{${bar_color}}┃%f"
+local leftbar3="%F{${bar_color}}┗%f"
 
 # Show my IP Address
 ZSH_THEME_SHOW_IP=${ZSH_THEME_SHOW_IP:-1}
 ZSH_THEME_SHOW_IP6=${ZSH_THEME_SHOW_IP6:-0}
-ZSH_THEME_SHOW_APIPA=${ZSH_THEME_SHOW_APIPA:-0}
+ZSH_THEME_SHOW_APIPA=${YSP_IFACE_EXCLUDE_REZSH_THEME_SHOW_APIPA:-0}
 yspep_my_ip() {
   [[ $ZSH_THEME_SHOW_IP != 1 ]] && return
   echo -n "${dgrey}[%b%F{green}"
@@ -87,7 +90,7 @@ yspep_my_ip() {
       ifaces=( $(ifconfig | grep "UP" | sed -r -e 's|:.*||') )
       for dev in ${ifaces[@]}; do
         [[ $dev =~ ^lo ]] && continue
-        [[ $dev =~ $YSP_IFACE_EXCLUDE_RE ]] && continue
+        [[ $dev =~ $iface_exclude_re ]] && continue
         addr=$( ifconfig $dev | grep "inet " | cut -d" " -f2 )
         addrs+=( "%F{022}$dev:%F{green}$addr" )
       done
@@ -104,7 +107,7 @@ yspep_my_ip() {
         [[ $fam =~ ^inet ]] || continue  # skip non-inet addr's (what could they be?)
         [[ $fam == inet6 && $ZSH_THEME_SHOW_IP6 != 1 ]] && continue
         [[ $addr =~ 169\.254\. && $ZSH_THEME_SHOW_APIPA != 1 ]] && continue
-        [[ $dev =~ $YSP_IFACE_EXCLUDE_RE ]] && continue
+        [[ $dev =~ $iface_exclude_re ]] && continue
         addrs+=( "%F{022}$dev:%F{green}${addr%/*}" )
       done < <(ip -d -o addr sh)
       ;;
