@@ -158,7 +158,7 @@ PROMPT="$leftbar1$ip_info
 PROMPT+="$leftbar2${dgrey}[%*]%b \
 %(#,%K{yellow}%F{black}%n%k,%F{cyan}%n)\
 %F{white}@${host}${tmux_info}$dgrey:%b\
-%B%F{yellow}%~%b\
+%B%F{yellow}%d%b\
 ${hg_info}\
 ${git_info}\
  $exit_code$venv_info$other_info
