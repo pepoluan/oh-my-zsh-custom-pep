@@ -125,8 +125,9 @@ local venv_info="%B%F{blue}\$(virtualenv_prompt_info)%b"
 # Detect tmux
 yspep_tmux_info() {
   if [[ $TMUX ]]; then
-    tmux_window="$(tmux run 'echo "#{window_id}"')"
-    printf "\xE2\x80\x96${tmux_window#@}"
+    # tmux_window="$(tmux run 'echo "#{window_id}"')"
+    # printf "\xE2\x80\x96${tmux_window#@}"
+    printf "\xE2\x80\x96${TMUX_PANE#%}"
   fi
 }
 local tmux_info='$(yspep_tmux_info)'
