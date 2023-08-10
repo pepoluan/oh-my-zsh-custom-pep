@@ -41,7 +41,12 @@ zrecompile-omz() {
 
     # zcompile all .zsh files in omz
     local omz_dir=${ZDOTDIR:-${HOME}}/.oh-my-zsh
-    for file in ${omz_dir}/**/*.zsh^(README.md|*.zwc)(.N); do
+    for file in $(find $omz_dir -name "*.zsh"); do
+        zrecompile $1 ${file}
+    done
+
+    # ... also compdef plugins that has no .zsh suffix
+    for file in $(grep -rl "compdef" $omz_dir/plugins | egrep -v "\.(md|zsh|zwc)" ); do
         zrecompile $1 ${file}
     done
 }
