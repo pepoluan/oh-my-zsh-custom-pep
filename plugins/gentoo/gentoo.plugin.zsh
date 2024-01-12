@@ -17,6 +17,9 @@ SetAliases() {
   alias emch="${_subex}emerge -pv --changed-use --deep --tree @world"
   alias emch1="${_subex}emerge -1v --changed-use --deep @world"
   alias emsync="${_subex}emaint sync"
+  alias emres="${_subex}emerge --resume"
+  alias emcln="${_subex}emerge -p --depclean"
+  alias emcln1="${_subex}emerge --depclean"
 }
 
 SetAliases
