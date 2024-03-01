@@ -27,3 +27,6 @@ zrecompile-omz [-q[q[q]]]
 ```
 
 Recompile all oh-my-zsh scripts
+
+**NOTE:** Requires a Python3 installation that can be invoked through `/usr/bin/env python3`
+
