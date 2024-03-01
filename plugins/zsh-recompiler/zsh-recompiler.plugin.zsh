@@ -41,12 +41,16 @@ zrecompile-omz() {
 
     # zcompile all .zsh files in omz
     local omz_dir=${ZDOTDIR:-${HOME}}/.oh-my-zsh
-    for file in $(find $omz_dir -name "*.zsh"); do
+    local finder=${omz_dir}/custom/plugins/zsh-recompiler/find-zsh-script.py
+    for file in $($finder $omz_dir); do
         zrecompile $1 ${file}
     done
+    # for file in $(find $omz_dir -name "*.zsh"); do
+    #     zrecompile $1 ${file}
+    # done
 
-    # ... also compdef plugins that has no .zsh suffix
-    for file in $(grep -rl "compdef" $omz_dir/plugins | egrep -v "\.(md|zsh|zwc)" ); do
-        zrecompile $1 ${file}
-    done
+    # # ... also compdef plugins that has no .zsh suffix
+    # for file in $(grep -rl "compdef" $omz_dir/plugins | egrep -v "\.(md|zsh|zwc)" ); do
+    #     zrecompile $1 ${file}
+    # done
 }
