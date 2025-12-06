@@ -3,10 +3,6 @@
 	url = https://github.com/zsh-users/zsh-syntax-highlighting.git
 	shallow = true
 
-[submodule "plugins/zsh-pyenv"]
-	path = plugins/zsh-pyenv
-	url = https://github.com/mattberther/zsh-pyenv.git
-
 [submodule "plugins/fast-syntax-highlighting"]
 	path = plugins/fast-syntax-highlighting
 	url = https://github.com/zdharma-continuum/fast-syntax-highlighting.git
